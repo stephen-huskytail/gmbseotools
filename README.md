@@ -1,6 +1,6 @@
 # GMBSEOTools.com
 
-Next.js + Sanity CMS affiliate site for Google Business Profile / local SEO tools.
+Next.js affiliate site for Google Business Profile / local SEO tools with MDX content.
 
 ## Prerequisites
 
@@ -21,6 +21,16 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## Content
+
+Content is stored as MDX files in the `/content` directory:
+- `/content/blog/` - Blog posts
+- `/content/tools/` - Tool listings
+- `/content/reviews/` - Tool reviews
+- `/content/comparisons/` - Tool comparisons
+
+Each MDX file uses frontmatter for metadata.
+
 ## Environment Variables
 
 See `.env.example` for the full list of variables. **Do not create `.env` files** — all secrets come from Doppler at runtime.
@@ -37,7 +47,7 @@ Deployed to Vercel. The Vercel project must have Doppler integration enabled or 
 ## Stack
 
 - **Framework**: Next.js 16
-- **CMS**: Sanity
+- **Content**: MDX files in `/content`
 - **Hosting**: Vercel
 - **Secrets**: Doppler
 - **Analytics**: PostHog, Google Analytics 4

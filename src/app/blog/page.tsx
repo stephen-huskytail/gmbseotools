@@ -1,33 +1,16 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import { Metadata } from 'next'
-import { client, urlFor } from '../../../sanity/lib/client'
-import { postsQuery } from '../../../sanity/lib/queries'
-
-export const revalidate = 3600
+import Image from "next/image";
+import Link from "next/link";
+import { Metadata } from "next";
+import { getAllPosts } from "../../lib/content";
 
 export const metadata: Metadata = {
-  title: 'Blog - Best AI SEO Tools',
-  description: 'Tips, guides, and insights about AI-powered SEO tools and strategies.',
-}
+  title: "Blog - GMB SEO Tools",
+  description:
+    "Tips, guides, and insights about Google My Business SEO tools and strategies.",
+};
 
-interface Post {
-  _id: string
-  title: string
-  slug: { current: string }
-  excerpt?: string
-  category?: { _id: string; name: string; slug: { current: string } }
-  author?: {
-    _id: string
-    name: string
-    image?: { asset: { _ref: string } }
-  }
-  featuredImage?: { asset: { _ref: string } }
-  publishedAt?: string
-}
-
-export default async function BlogPage() {
-  const posts = await client.fetch<Post[]>(postsQuery)
+export default function BlogPage() {
+  const posts = getAllPosts();
 
   return (
     <div className="bg-white">
@@ -35,7 +18,7 @@ export default async function BlogPage() {
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold text-white">Blog</h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-blue-100">
-            Tips, guides, and insights to help you master AI-powered SEO.
+            Tips, guides, and insights to help you master Google My Business SEO.
           </p>
         </div>
       </header>
@@ -45,13 +28,13 @@ export default async function BlogPage() {
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (
               <article
-                key={post._id}
+                key={post.slug}
                 className="group overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:shadow-lg"
               >
                 {post.featuredImage && (
-                  <Link href={`/blog/${post.slug.current}`}>
+                  <Link href={`/blog/${post.slug}`}>
                     <Image
-                      src={urlFor(post.featuredImage).width(600).height(300).url()}
+                      src={post.featuredImage}
                       alt={post.title}
                       width={600}
                       height={300}
@@ -62,43 +45,35 @@ export default async function BlogPage() {
                 <div className="p-6">
                   {post.category && (
                     <Link
-                      href={`/categories/${post.category.slug.current}`}
+                      href={`/categories/${post.category}`}
                       className="text-xs font-medium uppercase tracking-wide text-blue-600 hover:underline"
                     >
-                      {post.category.name}
+                      {post.category}
                     </Link>
                   )}
-                  <Link href={`/blog/${post.slug.current}`}>
+                  <Link href={`/blog/${post.slug}`}>
                     <h2 className="mt-2 font-semibold text-gray-900 group-hover:text-blue-600">
                       {post.title}
                     </h2>
                   </Link>
-                  {post.excerpt && (
-                    <p className="mt-2 text-sm text-gray-600 line-clamp-2">
-                      {post.excerpt}
+                  {post.description && (
+                    <p className="mt-2 line-clamp-2 text-sm text-gray-600">
+                      {post.description}
                     </p>
                   )}
                   <div className="mt-4 flex items-center justify-between text-sm">
                     {post.author && (
-                      <div className="flex items-center gap-2">
-                        {post.author.image && (
-                          <Image
-                            src={urlFor(post.author.image).width(24).height(24).url()}
-                            alt={post.author.name}
-                            width={24}
-                            height={24}
-                            className="rounded-full"
-                          />
-                        )}
-                        <span className="text-gray-500">{post.author.name}</span>
-                      </div>
+                      <span className="text-gray-500">{post.author}</span>
                     )}
                     {post.publishedAt && (
                       <span className="text-gray-400">
-                        {new Date(post.publishedAt).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                        })}
+                        {new Date(post.publishedAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            month: "short",
+                            day: "numeric",
+                          }
+                        )}
                       </span>
                     )}
                   </div>
@@ -113,5 +88,5 @@ export default async function BlogPage() {
         )}
       </div>
     </div>
-  )
+  );
 }
